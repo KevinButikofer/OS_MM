@@ -37,7 +37,7 @@ public class pathFolow : MonoBehaviour
         if(currentIdx < startPath.Count && !isMoveCouroutineRunning && startStartMove)
         {
             isMoveCouroutineRunning = true;
-            animator._animRun = true;
+            animator._animRunHolding = true;
             StartCoroutine(MoveNext(this.transform.position, startPath));
             currentIdx++;
         }

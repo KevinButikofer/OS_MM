@@ -5,7 +5,6 @@ using UnityEngine;
 public class Bloc : MonoBehaviour
 {
     public GameObject prefabDataCube;
-    public RenderTexture texture;
 
     public Color color;
     public GameObject dataCube;
