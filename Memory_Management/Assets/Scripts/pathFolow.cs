@@ -9,7 +9,9 @@ public class pathFolow : MonoBehaviour
     private List<Transform> endPath = new List<Transform>();
     private int currentIdx = 0;
     public CharacterAnimation animator;
-
+    public Animator doorLeftAnim;
+    public Animator doorRightAnim;
+    public GameObject door;
     private bool isMoveCouroutineRunning = false;
     private bool startStartMove = true;
     private bool endStartMove = false;
@@ -20,6 +22,9 @@ public class pathFolow : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+        doorLeftAnim = GameObject.Find("door_left").GetComponent<Animator>();
+        doorRightAnim = GameObject.Find("door_right").GetComponent<Animator>();
         wait = new WaitForFixedUpdate();
         foreach(Transform child in GameObject.Find("StartPath").transform)
         {
@@ -34,7 +39,20 @@ public class pathFolow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(currentIdx < startPath.Count && !isMoveCouroutineRunning && startStartMove)
+        Debug.Log(transform.position.z);
+        if (transform.position.z > -18)
+        {
+            doorLeftAnim.SetBool("opendoor", true);
+            doorRightAnim.SetBool("opendoor", true);
+        }
+        if (transform.position.z > -12)
+        {
+            doorLeftAnim.SetBool("opendoor", false);
+            doorRightAnim.SetBool("opendoor", false);
+        }
+        //if (currentIdx == 2)
+        //doorAnim.SetBool("opendoor", true);
+        if (currentIdx < startPath.Count && !isMoveCouroutineRunning && startStartMove)
         {
             isMoveCouroutineRunning = true;
             animator._animRunHolding = true;
