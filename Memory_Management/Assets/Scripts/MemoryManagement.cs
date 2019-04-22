@@ -131,6 +131,39 @@ public class MemoryManagement : MonoBehaviour
             }
         }
     }
+    public void DefragMemory2()
+    {
+        int spaceCount = 0;
+        MemoryBlock currentData = null;
+        int currentDataIdx = -1;
+        int startIdx = 0;
+        for (int i = 0; i < memoriesBlock.Count - 1; i++)
+        {
+            if (!memoriesBlock[i].isOccupied)
+            {
+                if(spaceCount == 0)
+                {
+                    startIdx = i;
+                }
+                spaceCount++;
+            }
+            //on decale pour remplir l'espace vide
+            else
+            {
+                currentData = memoriesBlock[i];
+                currentDataIdx = i;
+                Bloc b = currentData.Data.GetComponent<Bloc>();
+
+                for (int j = startIdx; j < b.size; j++)
+                {
+                    memoriesBlock[j].Data = memoriesBlock[currentDataIdx + j].Data;
+                    memoriesBlock[currentDataIdx + j].Free();
+                    memoriesBlock[j].Data.transform.position = memoriesBlock[j].transform.position;
+                }
+                i = startIdx + b.size;
+            }
+        }
+     }
     public int EnouhSpaceStartIndex(List<int> list, int size)
     {
         int prevI = list[0];
