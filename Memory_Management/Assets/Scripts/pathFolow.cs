@@ -16,10 +16,20 @@ public class pathFolow : MonoBehaviour
     private bool endEndingMove = false;
     private bool startEndMove = false;
 
+    public int cubeSize;
+    public int cubeIdx;
+
+    public GameObject prefabDataCube;
+    public GameObject dataCube;
+
     WaitForFixedUpdate wait;
     // Start is called before the first frame update
     void Start()
     {
+        dataCube = Instantiate(prefabDataCube, gameObject.transform.Find("Character").Find("Character").Find("DataSpawn"));
+        dataCube.GetComponent<Renderer>().material.color = transform.transform.Find("Character").Find("CharacterModel").GetComponent<Renderer>().material.color;
+        cubeIdx = dataCube.GetComponent<Bloc>().GetInstanceID();
+        cubeSize = (dataCube.GetComponent<Bloc>()).size;
         wait = new WaitForFixedUpdate();
         foreach(Transform child in GameObject.Find("StartPath").transform)
         {
@@ -43,11 +53,11 @@ public class pathFolow : MonoBehaviour
         }
         else if(endStartMove)
         {
-            animator._animRun = false;
+            animator._animRunHolding = false;
             currentIdx = 0;
             isMoveCouroutineRunning = false;
 
-            GetComponent<Bloc>().ReleaseBloc();
+            dataCube.GetComponent<Bloc>().ReleaseBloc();
 
             startStartMove = false;
             startEndMove = true;

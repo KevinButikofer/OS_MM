@@ -4,29 +4,32 @@ using UnityEngine;
 
 public class Bloc : MonoBehaviour
 {
-    public GameObject prefabDataCube;
+    //public GameObject prefabDataCube;
 
     public Color color;
     public GameObject dataCube;
-    public int size = 1;
+    public int size;
     public int posInQueue;
     // Start is called before the first frame update
     void Start()
     {
-        int r = Random.Range(10000, 999999999);
+        size = Random.Range(1, 15);
+        int r = GetInstanceID();//Random.Range(10000, 999999999);
         string cubeText = r.ToString();
-        dataCube = Instantiate(prefabDataCube, transform);
-        dataCube.transform.localScale.Set(size, 1, 1);
-        dataCube.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z + 1.2f);
-        Color c = gameObject.transform.Find("Character").Find("CharacterModel").GetComponent<Renderer>().material.color;
-        dataCube.GetComponent<Renderer>().material.color = c;
+        //dataCube = Instantiate(prefabDataCube, gameObject.transform.Find("Character").Find("Character").Find("DataSpawn"));
+        transform.localScale.Set(1, 1, 1);
+        
 
-        foreach(Transform t in dataCube.transform)
+        foreach(Transform t in transform)
         {
             t.gameObject.GetComponent<TextMesh>().text = cubeText;
         }
     }
-
+    public void setColor(Color c)
+    {
+        c = transform.parent.parent.parent.gameObject.transform.Find("CharacterModel").GetComponent<Renderer>().material.color;
+        GetComponent<Renderer>().material.color = c;
+    }
     // Update is called once per frame
     void Update()
     {
@@ -34,7 +37,7 @@ public class Bloc : MonoBehaviour
     }
     public void ReleaseBloc()
     {
-        dataCube.GetComponent<Rigidbody>().useGravity = true;
-        dataCube.transform.parent = null;
+        GetComponent<Rigidbody>().useGravity = true;
+        transform.parent = null;
     }
 }
