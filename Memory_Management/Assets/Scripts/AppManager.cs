@@ -8,6 +8,8 @@ public class AppManager : MonoBehaviour
     public GameObject prefabProg;
     public float minTimeBetweenSpawn;
     private float spawnTime;
+    public bool isGamePaused = true;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -16,15 +18,18 @@ public class AppManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        spawnTime -= Time.deltaTime;
-        if(Input.GetKeyDown(KeyCode.H) && spawnTime <= 0)
+        if (!isGamePaused)
         {
-            spawnTime = minTimeBetweenSpawn;
-            Color color = Random.ColorHSV();
-            GameObject prog = Instantiate(prefabProg);
-            prog.transform.position = new Vector3(8, 1.5f, -30);
-            prog.gameObject.transform.Find("Character").Find("CharacterModel").GetComponent<Renderer>().material.color = color;
-            progs.Add(prog);
+            spawnTime -= Time.deltaTime;
+            if (Input.GetKeyDown(KeyCode.H) && spawnTime <= 0)
+            {
+                spawnTime = minTimeBetweenSpawn;
+                Color color = Random.ColorHSV();
+                GameObject prog = Instantiate(prefabProg);
+                prog.transform.position = new Vector3(8, 1.5f, -30);
+                prog.gameObject.transform.Find("Character").Find("CharacterModel").GetComponent<Renderer>().material.color = color;
+                progs.Add(prog);
+            }
         }
     }
 }
