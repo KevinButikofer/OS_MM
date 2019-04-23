@@ -28,6 +28,7 @@ public class pathFolow : MonoBehaviour
     {
         dataCube = Instantiate(prefabDataCube, gameObject.transform.Find("Character").Find("Character").Find("DataSpawn"));
         dataCube.GetComponent<Renderer>().material.color = transform.transform.Find("Character").Find("CharacterModel").GetComponent<Renderer>().material.color;
+        dataCube.GetComponent<Bloc>().InitText();
         cubeIdx = dataCube.GetComponent<Bloc>().GetInstanceID();
         cubeSize = (dataCube.GetComponent<Bloc>()).size;
         wait = new WaitForFixedUpdate();

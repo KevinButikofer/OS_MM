@@ -33,6 +33,12 @@ public class addressDisplay : MonoBehaviour
         }
         UpdateDisplay();
     }
+    public void RemoveAdress(int key)
+    {
+        address.Remove(key);
+        addressUi.Remove(key);
+        UpdateDisplay();
+    }
     public void UpdateDisplay()
     {
         int i = 0;

@@ -53,21 +53,33 @@ public class BluePortal : MonoBehaviour
             orangePortal.SetActive(true);
             List<Bloc> blocs = new List<Bloc>();
             blocs.Add(bloc);
-            for(int i = 1; i < bloc.size; i++)
+
+            for (int i = 1; i < bloc.size; i++)
             {
                 Bloc newBloc = Instantiate(bloc);
+                newBloc.InitText(blocRigidbody.gameObject.GetInstanceID().ToString());
+                newBloc.gameObject.SetActive(false);
                 blocs.Add(newBloc);
             }
+
             int startIdx = mM.AllocateMemory(blocs);
-            if(startIdx != -1)
+           
+            if (startIdx != -1)
             {
                 GameObject key = Instantiate(keyPrefab, new Vector3(0, 0, 0), new Quaternion());
                 key.transform.Find("KeyModel").GetComponent<Renderer>().material.color = bloc.GetComponent<Renderer>().material.color;
                 key.transform.Find("KeyText").GetComponent<TextMesh>().text = bloc.GetComponentInChildren<TextMesh>().text;
+                foreach (Bloc b in blocs)
+                {
+                    b.gameObject.SetActive(true);
+                }
             }
             else
             {
-                
+                foreach(Bloc b in blocs)
+                {
+                    Destroy(b);
+                }
             }
            
            

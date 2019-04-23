@@ -14,13 +14,23 @@ public class Bloc : MonoBehaviour
     void Start()
     {
         size = Random.Range(1, 15);
-        int r = GetInstanceID();//Random.Range(10000, 999999999);
-        string cubeText = r.ToString();
+        
         //dataCube = Instantiate(prefabDataCube, gameObject.transform.Find("Character").Find("Character").Find("DataSpawn"));
         transform.localScale.Set(1, 1, 1);
-        
-
-        foreach(Transform t in transform)
+    }
+    public void InitText(string s="")
+    {
+        string cubeText;
+        if (s.Equals(""))
+        {
+            int r = GetInstanceID();
+            cubeText = r.ToString();
+        }
+        else
+        {
+            cubeText = s;
+        }
+        foreach (Transform t in transform)
         {
             t.gameObject.GetComponent<TextMesh>().text = cubeText;
         }

@@ -32,7 +32,15 @@ public class MemoryManagement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(Input.GetKeyDown(KeyCode.J))
+        {
+            int key = Random.Range(0, addressDisplay.address.Count);
+            int i = addressDisplay.address.ElementAt(key).Value;
+            Debug.Log(i);
+            int size = memoriesBlock[i].Data.GetComponent<Bloc>().size;
+            Debug.Log(size);
+            FreeMemory(i, key, size);
+        }
     }
     /// <summary>
     /// Search the first big enough free memory block
@@ -83,17 +91,28 @@ public class MemoryManagement : MonoBehaviour
                 }
             }
             Debug.Log("Defrag");
-            DefragMemory();
+            DefragMemory2();
             return AllocateMemory(blocs);
         }
         return -1;
     }
     public void FreeMemory(int idx, int size)
     {
-        for(; idx < idx + size ; idx++)
+        for(int i = idx; i < idx + size - 1; i++)
         {
-            memoriesBlock[idx].Free();
+            memoriesBlock[i].Free();
         }
+        
+    }
+    public void FreeMemory(int idx, int key, int size)
+    {
+        for (int i = idx; i < idx + size - 1; i++)
+        {
+            Debug.Log("idx " + i);
+            memoriesBlock[i].Free();
+        }
+        addressDisplay.RemoveAdress(key);
+
     }
     public void DefragMemory()
     {
