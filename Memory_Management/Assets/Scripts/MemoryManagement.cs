@@ -106,13 +106,11 @@ public class MemoryManagement : MonoBehaviour
     }
     public void FreeMemory(int idx, int key, int size)
     {
-        for (int i = idx; i < idx + size - 1; i++)
+        for (int i = idx; i < idx + size; i++)
         {
-            Debug.Log("idx " + i);
             memoriesBlock[i].Free();
         }
         addressDisplay.RemoveAdress(key);
-
     }
     public void DefragMemory()
     {
