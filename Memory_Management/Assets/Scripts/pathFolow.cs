@@ -17,12 +17,14 @@ public class pathFolow : MonoBehaviour
     private bool endStartMove = false;
     private bool endEndingMove = false;
     private bool startEndMove = false;
+    public int posInQueue = -1;
+    public QueueManager queueManager;
 
     WaitForFixedUpdate wait;
     // Start is called before the first frame update
     void Start()
     {
-
+        
         doorLeftAnim = GameObject.Find("door_left").GetComponent<Animator>();
         doorRightAnim = GameObject.Find("door_right").GetComponent<Animator>();
         wait = new WaitForFixedUpdate();
@@ -34,24 +36,68 @@ public class pathFolow : MonoBehaviour
         {
             endPath.Add(child);
         }
+
+        transform.position = new Vector3(transform.position.x, transform.position.y, -19 - 4 * posInQueue);
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(transform.position.z);
-        if (transform.position.z > -18)
+        
+        if (posInQueue > 0 && transform.position.z >= -19 - 4 * posInQueue)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y, -19 - 4 * posInQueue);
+            return;
+        }
+            
+        if (posInQueue == 0 && queueManager.isSomoneInside && transform.position.z >= -19)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y, -19);
+            return;
+        }
+            
+        //if (queueManager.isSomoneInside && posInQueue == 0 && transform.position.z >= -19 - 4 * posInQueue)
+            //return;
+        //if (queueManager.isSomoneInside && posInQueue >= 0 && transform.position.z >= -19)
+            //return;
+
+        //if (transform.position.z < -19 - 4 * posInQueue && posInQueue > 0)
+        //{
+            //return;
+        //}
+       
+
+
+        if (transform.position.z > -19)
+        {
+            if (transform.position.z < -4) // Est en train de se déplacer à l'intérieur
+                queueManager.isSomoneInside = true;
+            if (posInQueue == 0) // Si position est de 0, enlève de la queue
+            {
+                queueManager.leaveQueue(this);
+                posInQueue = -1;
+            }
+        }
+
+        if (transform.position.z > -18) // Arrive devant les portes
         {
             doorLeftAnim.SetBool("opendoor", true);
             doorRightAnim.SetBool("opendoor", true);
         }
-        if (transform.position.z > -12)
+        if (transform.position.z > -12) // Fermeture des portes
         {
             doorLeftAnim.SetBool("opendoor", false);
             doorRightAnim.SetBool("opendoor", false);
         }
-        //if (currentIdx == 2)
-        //doorAnim.SetBool("opendoor", true);
+        if (transform.position.z > -4 && posInQueue == -1) // Fini son truc..
+        {
+            queueManager.isSomoneInside = false;
+            posInQueue = -2;
+        }
+
+
+
+
         if (currentIdx < startPath.Count && !isMoveCouroutineRunning && startStartMove)
         {
             isMoveCouroutineRunning = true;
