@@ -39,7 +39,11 @@ public class MemoryManagement : MonoBehaviour
             Debug.Log(i);
             int size = memoriesBlock[i].Data.GetComponent<Bloc>().size;
             Debug.Log(size);
-            FreeMemory(i, key, size);
+            FreeMemory(i, addressDisplay.address.ElementAt(key).Key, size);
+        }
+        if(Input.GetKeyDown(KeyCode.K))
+        {
+            DefragMemory2();
         }
     }
     /// <summary>
@@ -75,7 +79,7 @@ public class MemoryManagement : MonoBehaviour
                             blocs[j].transform.position = memoriesBlock[startIdx + j].transform.position;
                             blocs[j].transform.forward = Vector3.right;
                         }
-                        addressDisplay.AddAdress(blocs[0].gameObject.GetInstanceID(), startIdx);
+                        addressDisplay.AddAdress(blocs[0].GetInstanceID(), startIdx);
 
                         if (totalSpace - blocs.Count() == 0)
                         {
@@ -150,11 +154,12 @@ public class MemoryManagement : MonoBehaviour
     }
     public void DefragMemory2()
     {
+        Debug.Log("defrag");
         int spaceCount = 0;
         MemoryBlock currentData = null;
         int currentDataIdx = -1;
         int startIdx = 0;
-        for (int i = 0; i < memoriesBlock.Count - 1; i++)
+        for (int i = 0; i < memoriesBlock.Count; i++)
         {
             if (!memoriesBlock[i].isOccupied)
             {
@@ -165,19 +170,25 @@ public class MemoryManagement : MonoBehaviour
                 spaceCount++;
             }
             //on decale pour remplir l'espace vide
-            else
+            else if(i != 0 && spaceCount > 0)
             {
+                spaceCount = 0;
                 currentData = memoriesBlock[i];
-                currentDataIdx = i;
-                Bloc b = currentData.Data.GetComponent<Bloc>();
-
-                for (int j = startIdx; j < b.size; j++)
+                if (currentData != null)
                 {
-                    memoriesBlock[j].Data = memoriesBlock[currentDataIdx + j].Data;
-                    memoriesBlock[currentDataIdx + j].Free();
-                    memoriesBlock[j].Data.transform.position = memoriesBlock[j].transform.position;
+                    currentDataIdx = i;
+                    Bloc b = currentData.Data.GetComponent<Bloc>();
+
+                    for (int j = startIdx; j < startIdx + b.size; j++)
+                    {
+                        memoriesBlock[j].Data = memoriesBlock[currentDataIdx + j - startIdx].Data;
+                        memoriesBlock[currentDataIdx + j - startIdx].Data = null;
+                        memoriesBlock[currentDataIdx + j - startIdx].isOccupied = false;
+                        memoriesBlock[j].Data.transform.position = memoriesBlock[j].transform.position;
+                    }
+                    addressDisplay.AddAdress(b.GetInstanceID(), startIdx);
+                    i = startIdx + b.size - 1;
                 }
-                i = startIdx + b.size;
             }
         }
      }

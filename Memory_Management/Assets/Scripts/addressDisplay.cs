@@ -23,7 +23,10 @@ public class addressDisplay : MonoBehaviour
     public void AddAdress(int key, int value)
     {
         if (address.ContainsKey(key))
+        {
             address[key] = value;
+            addressUi[key].GetComponent<Text>().text = key.ToString() + " -> " + value.ToString();
+        }
         else
         {
             address.Add(key, value);
@@ -35,8 +38,10 @@ public class addressDisplay : MonoBehaviour
     }
     public void RemoveAdress(int key)
     {
-        address.Remove(key);
+        Destroy(addressUi[key]);
+        address.Remove(key);        
         addressUi.Remove(key);
+
         UpdateDisplay();
     }
     public void UpdateDisplay()

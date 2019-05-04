@@ -57,7 +57,7 @@ public class BluePortal : MonoBehaviour
             for (int i = 1; i < bloc.size; i++)
             {
                 Bloc newBloc = Instantiate(bloc);
-                newBloc.InitText(blocRigidbody.gameObject.GetInstanceID().ToString());
+                newBloc.InitText(bloc.GetInstanceID().ToString());
                 newBloc.gameObject.SetActive(false);
                 blocs.Add(newBloc);
             }

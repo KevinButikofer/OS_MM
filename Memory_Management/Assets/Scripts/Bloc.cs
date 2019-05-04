@@ -13,6 +13,7 @@ public class Bloc : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GetComponent<Rigidbody>().isKinematic = true;
         size = Random.Range(1, 15);
         
         //dataCube = Instantiate(prefabDataCube, gameObject.transform.Find("Character").Find("Character").Find("DataSpawn"));
@@ -47,6 +48,7 @@ public class Bloc : MonoBehaviour
     }
     public void ReleaseBloc()
     {
+        GetComponent<Rigidbody>().isKinematic = false;
         GetComponent<Rigidbody>().useGravity = true;
         transform.parent = null;
     }
