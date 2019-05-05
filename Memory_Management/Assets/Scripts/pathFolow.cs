@@ -17,8 +17,14 @@ public class pathFolow : MonoBehaviour
     private bool endStartMove = false;
     private bool endEndingMove = false;
     private bool startEndMove = false;
+    private bool hasStoreData = false;
     public int posInQueue = -1;
     public QueueManager queueManager;
+
+    private static MemoryManagement memoryManagement;
+    private static addressDisplay addressDisplay;
+
+    public float timeBeforeReturn = -10;
 
     public int cubeSize;
     public int cubeIdx;
@@ -30,6 +36,11 @@ public class pathFolow : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if(memoryManagement == null)
+            memoryManagement = FindObjectOfType<MemoryManagement>();
+        if(addressDisplay == null)
+            addressDisplay = FindObjectOfType<addressDisplay>();
+
         dataCube = Instantiate(prefabDataCube, gameObject.transform.Find("Character").Find("Character").Find("DataSpawn"));
         dataCube.GetComponent<Renderer>().material.color = transform.transform.Find("Character").Find("CharacterModel").GetComponent<Renderer>().material.color;
         dataCube.GetComponent<Bloc>().InitText();
@@ -53,29 +64,29 @@ public class pathFolow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        timeBeforeReturn -= Time.deltaTime;
         if (posInQueue > 0 && transform.position.z >= -19 - 4 * posInQueue)
         {
             transform.position = new Vector3(transform.position.x, transform.position.y, -19 - 4 * posInQueue);
             return;
         }
-            
+
         if (posInQueue == 0 && queueManager.isSomoneInside && transform.position.z >= -19)
         {
             transform.position = new Vector3(transform.position.x, transform.position.y, -19);
             return;
         }
-            
+
         //if (queueManager.isSomoneInside && posInQueue == 0 && transform.position.z >= -19 - 4 * posInQueue)
-            //return;
+        //return;
         //if (queueManager.isSomoneInside && posInQueue >= 0 && transform.position.z >= -19)
-            //return;
+        //return;
 
         //if (transform.position.z < -19 - 4 * posInQueue && posInQueue > 0)
         //{
-            //return;
+        //return;
         //}
-       
+
 
 
         if (transform.position.z > -19)
@@ -88,7 +99,6 @@ public class pathFolow : MonoBehaviour
                 posInQueue = -1;
             }
         }
-
         if (transform.position.z > -18) // Arrive devant les portes
         {
             doorLeftAnim.SetBool("opendoor", true);
@@ -111,35 +121,74 @@ public class pathFolow : MonoBehaviour
         if (currentIdx < startPath.Count && !isMoveCouroutineRunning && startStartMove)
         {
             isMoveCouroutineRunning = true;
-            animator._animRunHolding = true;
+            if (hasStoreData)
+                animator._animRun = true;
+            else
+                animator._animRunHolding = true;
             StartCoroutine(MoveNext(this.transform.position, startPath));
             currentIdx++;
         }
-        else if(endStartMove)
+        else if (endStartMove)
         {
             animator._animRunHolding = false;
             currentIdx = 0;
             isMoveCouroutineRunning = false;
 
-            dataCube.GetComponent<Bloc>().ReleaseBloc();
+            if(!hasStoreData)
+                dataCube.GetComponent<Bloc>().ReleaseBloc();
+            else
+            {
+                Bloc b = dataCube.GetComponent<Bloc>();
+                if (addressDisplay.address.TryGetValue(b.GetInstanceID(), out int idx))
+                {
+                    memoryManagement.FreeMemory(idx, b.GetInstanceID(), b.size);
+                }
+                else
+                {
+                    print("Key Error");
+                }
+            }
 
             startStartMove = false;
             startEndMove = true;
             endStartMove = false;
         }
-        if(currentIdx < endPath.Count && !isMoveCouroutineRunning && startEndMove && !endEndingMove)
+        if (currentIdx < endPath.Count && !isMoveCouroutineRunning && startEndMove && !endEndingMove)
         {
             animator._animRun = true;
             isMoveCouroutineRunning = true;
             StartCoroutine(MoveNext(transform.position, endPath));
             currentIdx++;
         }
-        else if(endEndingMove)
+        else if (endEndingMove && timeBeforeReturn < -10)
         {
             animator._animRun = false;
             currentIdx = 0;
             isMoveCouroutineRunning = false;
             startEndMove = false;
+            if (!hasStoreData)
+            {
+                hasStoreData = true;
+                timeBeforeReturn = Random.Range(5, 40);
+            }
+            else
+            {
+                Destroy(this.gameObject);
+            }
+        }
+        if (timeBeforeReturn <= 0 && timeBeforeReturn > -10)
+        {
+            timeBeforeReturn = -10.0f;
+            queueManager.addCharacter(this);
+            currentIdx = 0;
+            isMoveCouroutineRunning = false;
+            startStartMove = true;
+            endStartMove = false;
+            endEndingMove = false;
+            startEndMove = false;
+            currentIdx = 0;
+            posInQueue = -1;
+            transform.position = new Vector3(7.0f, 1.5f, -40.0f);
         }
     }
     IEnumerator RotateNext(Quaternion startRot, List<Transform> path, int idx)

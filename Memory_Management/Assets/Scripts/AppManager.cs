@@ -15,7 +15,7 @@ public class AppManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        queueManager = new QueueManager();
+        queueManager = FindObjectOfType<QueueManager>();
     }
 
     // Update is called once per frame
@@ -31,6 +31,7 @@ public class AppManager : MonoBehaviour
                 GameObject prog = Instantiate(prefabProg);
                 prog.transform.position = new Vector3(8, 1.5f, -30);
                 prog.gameObject.transform.Find("Character").Find("CharacterModel").GetComponent<Renderer>().material.color = color;
+                prog.GetComponent<pathFolow>().queueManager = queueManager;
                 queueManager.addCharacter(prog.GetComponent<pathFolow>());
                 progs.Add(prog);
             }
