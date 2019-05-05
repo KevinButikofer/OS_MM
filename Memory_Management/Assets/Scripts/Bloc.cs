@@ -10,6 +10,7 @@ public class Bloc : MonoBehaviour
     public GameObject dataCube;
     public int size;
     public int posInQueue;
+    public pathFolow prog;
     // Start is called before the first frame update
     void Start()
     {

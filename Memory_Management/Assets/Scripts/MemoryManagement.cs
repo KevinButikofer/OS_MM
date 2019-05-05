@@ -21,9 +21,7 @@ public class MemoryManagement : MonoBehaviour
             foreach (Transform t in dataSpot)
             {
                 datasSpotsList.Add(t);
-                //GameObject m = Instantiate(prefabData, t);
                 MemoryBlock mem = new MemoryBlock(t);
-                //mem.Data = m;
                 memoriesBlock.Add(mem);
             }
         }
@@ -32,7 +30,7 @@ public class MemoryManagement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.J))
+        /*if(Input.GetKeyDown(KeyCode.J))
         {
             int key = Random.Range(0, addressDisplay.address.Count);
             int i = addressDisplay.address.ElementAt(key).Value;
@@ -40,7 +38,7 @@ public class MemoryManagement : MonoBehaviour
             int size = memoriesBlock[i].Data.GetComponent<Bloc>().size;
             Debug.Log(size);
             FreeMemory(i, addressDisplay.address.ElementAt(key).Key, size);
-        }
+        }*/
         if(Input.GetKeyDown(KeyCode.K))
         {
             DefragMemory2();
@@ -94,14 +92,14 @@ public class MemoryManagement : MonoBehaviour
                     space = 0;
                 }
             }
-            Debug.Log("Defrag");
-            DefragMemory2();
+            DefragMemory2();            
             return AllocateMemory(blocs);
         }
         return -1;
     }
     public void FreeMemory(int idx, int size)
     {
+        isFull = false;
         for(int i = idx; i < idx + size - 1; i++)
         {
             memoriesBlock[i].Free();
@@ -110,47 +108,12 @@ public class MemoryManagement : MonoBehaviour
     }
     public void FreeMemory(int idx, int key, int size)
     {
+        isFull = false;
         for (int i = idx; i < idx + size; i++)
         {
             memoriesBlock[i].Free();
         }
         addressDisplay.RemoveAdress(key);
-    }
-    public void DefragMemory()
-    {
-        List<int> freeSpace = new List<int>();
-        MemoryBlock currentData = null;
-        int currentDataIdx = -1;
-        for (int i = 0; i < memoriesBlock.Count - 1; i++)
-        {
-            if(!memoriesBlock[i].isOccupied)
-            {
-                if(currentData != null)
-                {
-                    //end of a block
-                    Bloc b = currentData.Data.GetComponent<Bloc>();
-                    int startIdx = EnouhSpaceStartIndex(freeSpace, b.size);
-                    if (startIdx != -1)
-                    {
-                        freeSpace.RemoveRange(startIdx, b.size);
-                        //move data and update dictonnary
-                        addressDisplay.address[b.gameObject.GetInstanceID()] = startIdx;
-                        for (int j = startIdx; j < b.size; j++)
-                        {                            
-                            memoriesBlock[j].Data = memoriesBlock[currentDataIdx+j].Data;
-                            memoriesBlock[currentDataIdx + j].Free();
-                            memoriesBlock[j].Data.transform.position = memoriesBlock[j].transform.position;
-                        }
-                    }
-                }
-                freeSpace.Add(i);                
-            }
-            if(currentData == null)
-            {
-                currentData = memoriesBlock[i];
-                currentDataIdx = i;
-            }
-        }
     }
     public void DefragMemory2()
     {

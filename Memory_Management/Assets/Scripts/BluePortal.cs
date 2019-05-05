@@ -66,9 +66,9 @@ public class BluePortal : MonoBehaviour
            
             if (startIdx != -1)
             {
-                GameObject key = Instantiate(keyPrefab, new Vector3(0, 0, 0), new Quaternion());
-                key.transform.Find("KeyModel").GetComponent<Renderer>().material.color = bloc.GetComponent<Renderer>().material.color;
-                key.transform.Find("KeyText").GetComponent<TextMesh>().text = bloc.GetComponentInChildren<TextMesh>().text;
+                //GameObject key = Instantiate(keyPrefab, new Vector3(0, 0, 0), new Quaternion());
+                //key.transform.Find("KeyModel").GetComponent<Renderer>().material.color = bloc.GetComponent<Renderer>().material.color;
+                //key.transform.Find("KeyText").GetComponent<TextMesh>().text = bloc.GetComponentInChildren<TextMesh>().text;
                 foreach (Bloc b in blocs)
                 {
                     b.gameObject.SetActive(true);
@@ -76,10 +76,13 @@ public class BluePortal : MonoBehaviour
             }
             else
             {
+                print("no more space");
                 foreach(Bloc b in blocs)
                 {
                     Destroy(b);
                 }
+                Destroy(bloc.prog.gameObject);
+                Destroy(bloc.gameObject);                
             }
            
            

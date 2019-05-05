@@ -6,7 +6,6 @@ public class MemoryBlock
 {
     public bool isOccupied = false;
     public Transform transform;
-    public string addr;
     private GameObject data;
     public GameObject Data
     {

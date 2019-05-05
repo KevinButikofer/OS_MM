@@ -44,6 +44,7 @@ public class pathFolow : MonoBehaviour
         dataCube = Instantiate(prefabDataCube, gameObject.transform.Find("Character").Find("Character").Find("DataSpawn"));
         dataCube.GetComponent<Renderer>().material.color = transform.transform.Find("Character").Find("CharacterModel").GetComponent<Renderer>().material.color;
         dataCube.GetComponent<Bloc>().InitText();
+        dataCube.GetComponent<Bloc>().prog = this;
         cubeIdx = dataCube.GetComponent<Bloc>().GetInstanceID();
         cubeSize = (dataCube.GetComponent<Bloc>()).size;
         doorLeftAnim = GameObject.Find("door_left").GetComponent<Animator>();
@@ -60,7 +61,15 @@ public class pathFolow : MonoBehaviour
 
         transform.position = new Vector3(transform.position.x, transform.position.y, -19 - 4 * posInQueue);
     }
-
+    private void OnDestroy()
+    {        
+        if(posInQueue == -1)
+        {
+            queueManager.isSomoneInside = false;
+            posInQueue = -2;
+        }
+        queueManager.leaveQueue(this);
+    }
     // Update is called once per frame
     void Update()
     {
@@ -109,7 +118,7 @@ public class pathFolow : MonoBehaviour
             doorLeftAnim.SetBool("opendoor", false);
             doorRightAnim.SetBool("opendoor", false);
         }
-        if (transform.position.z > -4 && posInQueue == -1) // Fini son truc..
+        if (transform.position.z > -4 && posInQueue <= -1) // Fini son truc..
         {
             queueManager.isSomoneInside = false;
             posInQueue = -2;
@@ -134,7 +143,8 @@ public class pathFolow : MonoBehaviour
             currentIdx = 0;
             isMoveCouroutineRunning = false;
 
-            if(!hasStoreData)
+
+            if (!hasStoreData)
                 dataCube.GetComponent<Bloc>().ReleaseBloc();
             else
             {
@@ -148,6 +158,7 @@ public class pathFolow : MonoBehaviour
                     print("Key Error");
                 }
             }
+            
 
             startStartMove = false;
             startEndMove = true;
@@ -173,6 +184,7 @@ public class pathFolow : MonoBehaviour
             }
             else
             {
+                posInQueue = -2;
                 Destroy(this.gameObject);
             }
         }

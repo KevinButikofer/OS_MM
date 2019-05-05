@@ -14,9 +14,11 @@ public class QueueManager : MonoBehaviour
 
     public void leaveQueue(pathFolow character)
     {
-        charactersWaiting.Remove(character);
-        updatePos();
-        nbPeople--;
+        if (charactersWaiting.Remove(character))
+        {
+            updatePos();
+            nbPeople--;
+        }
     }
     public void addCharacter(pathFolow character)
     {

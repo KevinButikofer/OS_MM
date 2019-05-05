@@ -6,7 +6,7 @@ public class AppManager : MonoBehaviour
 {
     private List<GameObject> progs = new List<GameObject>();
     public GameObject prefabProg;
-    public float minTimeBetweenSpawn;
+    public float minTimeBetweenSpawn = 2.0f;
     private float spawnTime;
     public bool isGamePaused = true;
     
@@ -26,7 +26,6 @@ public class AppManager : MonoBehaviour
             spawnTime -= Time.deltaTime;
             if (Input.GetKeyDown(KeyCode.H) && spawnTime <= 0)
             {
-                spawnTime = minTimeBetweenSpawn;
                 Color color = Random.ColorHSV();
                 GameObject prog = Instantiate(prefabProg);
                 prog.transform.position = new Vector3(8, 1.5f, -30);
@@ -34,7 +33,12 @@ public class AppManager : MonoBehaviour
                 prog.GetComponent<pathFolow>().queueManager = queueManager;
                 queueManager.addCharacter(prog.GetComponent<pathFolow>());
                 progs.Add(prog);
+                spawnTime = minTimeBetweenSpawn;
             }
+        }
+        if(Input.GetKey(KeyCode.Escape))
+        {
+            Application.Quit();
         }
     }
 }
