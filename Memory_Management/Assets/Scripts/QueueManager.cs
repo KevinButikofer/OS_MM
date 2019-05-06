@@ -21,9 +21,8 @@ public class QueueManager : MonoBehaviour
         }
     }
     public void addCharacter(pathFolow character)
-    {
-        
-        character.queueManager = this;
+    {        
+        //character.queueManager = this;
         character.posInQueue = nbPeople;
         charactersWaiting.Add(character);
         nbPeople++;

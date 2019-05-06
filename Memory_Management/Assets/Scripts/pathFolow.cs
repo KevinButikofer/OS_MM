@@ -5,25 +5,26 @@ using UnityEngine;
 public class pathFolow : MonoBehaviour
 {
     public int moveSpeed;
-    private List<Transform> startPath = new List<Transform>();
-    private List<Transform> endPath = new List<Transform>();
-    private int currentIdx = 0;
+
+    private static List<Transform> startPath;
+    private static List<Transform> endPath;
+    private static QueueManager queueManager;
+    private static MemoryManagement memoryManagement;
+    private static addressDisplay addressDisplay;
     public CharacterAnimation animator;
     public Animator doorLeftAnim;
     public Animator doorRightAnim;
-    public GameObject door;
+
+    private int currentIdx = 0;
+
     private bool isMoveCouroutineRunning = false;
     private bool startStartMove = true;
     private bool endStartMove = false;
     private bool endEndingMove = false;
     private bool startEndMove = false;
     private bool hasStoreData = false;
-    public int posInQueue = -1;
-    public QueueManager queueManager;
 
-    private static MemoryManagement memoryManagement;
-    private static addressDisplay addressDisplay;
-
+    public int posInQueue = -1; 
     public float timeBeforeReturn = -10;
 
     public int cubeSize;
@@ -40,25 +41,35 @@ public class pathFolow : MonoBehaviour
             memoryManagement = FindObjectOfType<MemoryManagement>();
         if(addressDisplay == null)
             addressDisplay = FindObjectOfType<addressDisplay>();
+        if (queueManager == null)
+            queueManager = FindObjectOfType<QueueManager>();
+        if(startPath == null)
+        {
+            startPath = new List<Transform>();
+            foreach (Transform child in GameObject.Find("StartPath").transform)
+            {
+                startPath.Add(child);
+            }
+        }
+        if (endPath == null)
+        {
+            endPath = new List<Transform>();
+            foreach (Transform child in GameObject.Find("EndPath").transform)
+            {
+                endPath.Add(child);
+            }
+        }
 
+        cubeSize = Random.Range(1, 15);
         dataCube = Instantiate(prefabDataCube, gameObject.transform.Find("Character").Find("Character").Find("DataSpawn"));
         dataCube.GetComponent<Renderer>().material.color = transform.transform.Find("Character").Find("CharacterModel").GetComponent<Renderer>().material.color;
         dataCube.GetComponent<Bloc>().InitText();
-        dataCube.GetComponent<Bloc>().prog = this;
+        dataCube.GetComponent<Bloc>().size = cubeSize;
         cubeIdx = dataCube.GetComponent<Bloc>().GetInstanceID();
-        cubeSize = (dataCube.GetComponent<Bloc>()).size;
         doorLeftAnim = GameObject.Find("door_left").GetComponent<Animator>();
         doorRightAnim = GameObject.Find("door_right").GetComponent<Animator>();
         wait = new WaitForFixedUpdate();
-        foreach(Transform child in GameObject.Find("StartPath").transform)
-        {
-            startPath.Add(child);
-        }
-        foreach (Transform child in GameObject.Find("EndPath").transform)
-        {
-            endPath.Add(child);
-        }
-
+      
         transform.position = new Vector3(transform.position.x, transform.position.y, -19 - 4 * posInQueue);
     }
     private void OnDestroy()
@@ -145,13 +156,15 @@ public class pathFolow : MonoBehaviour
 
 
             if (!hasStoreData)
+            {
                 dataCube.GetComponent<Bloc>().ReleaseBloc();
+                dataCube = null;
+            }
             else
             {
-                Bloc b = dataCube.GetComponent<Bloc>();
-                if (addressDisplay.address.TryGetValue(b.GetInstanceID(), out int idx))
+                if (addressDisplay.address.TryGetValue(cubeIdx, out int idx))
                 {
-                    memoryManagement.FreeMemory(idx, b.GetInstanceID(), b.size);
+                    memoryManagement.FreeMemory(idx, cubeIdx, cubeSize);
                 }
                 else
                 {

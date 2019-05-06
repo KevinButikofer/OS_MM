@@ -155,21 +155,4 @@ public class MemoryManagement : MonoBehaviour
             }
         }
      }
-    public int EnouhSpaceStartIndex(List<int> list, int size)
-    {
-        int prevI = list[0];
-        int space = 0;
-        for(int i = 1; i < list.Count; i++)
-        {
-            if(i - prevI == 1)
-            {
-                space++;
-                if(space >= size)
-                {
-                    return list[i - size];
-                }
-            }
-        }
-        return -1;
-    }
 }

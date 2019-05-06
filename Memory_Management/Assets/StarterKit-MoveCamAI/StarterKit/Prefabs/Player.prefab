@@ -406,6 +406,7 @@ MonoBehaviour:
   dataCube: {fileID: 0}
   size: 1
   posInQueue: 0
+  prog: {fileID: 0}
 --- !u!114 &1703312262951309416
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -420,8 +421,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 4
   animator: {fileID: 11400008}
+  doorLeftAnim: {fileID: 0}
+  doorRightAnim: {fileID: 0}
+  door: {fileID: 0}
+  posInQueue: -1
+  timeBeforeReturn: -10
+  cubeSize: 0
+  cubeIdx: 0
   prefabDataCube: {fileID: 231389598768676261, guid: d460cba0a4aba4c4891d536ab07773c2,
     type: 3}
+  dataCube: {fileID: 0}
 --- !u!1 &100022
 GameObject:
   m_ObjectHideFlags: 0

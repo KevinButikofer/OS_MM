@@ -7,18 +7,13 @@ public class Bloc : MonoBehaviour
     //public GameObject prefabDataCube;
 
     public Color color;
-    public GameObject dataCube;
     public int size;
-    public int posInQueue;
-    public pathFolow prog;
+    public GameObject prog;
     // Start is called before the first frame update
     void Start()
     {
         GetComponent<Rigidbody>().isKinematic = true;
-        size = Random.Range(1, 15);
-        
         //dataCube = Instantiate(prefabDataCube, gameObject.transform.Find("Character").Find("Character").Find("DataSpawn"));
-        transform.localScale.Set(1, 1, 1);
     }
     public void InitText(string s="")
     {
